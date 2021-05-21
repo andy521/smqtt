@@ -3,6 +3,8 @@
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
 ## smqtt目前拥有的功能如下：
 
+![架构图](icon/component.png)
+
 1.  消息质量等级实现(支持qos0，qos1，qos2)
 2.  会话消息
 3.  保留消息
@@ -20,13 +22,6 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 11. 容器化支持 
 
 
-## 后面规划项目
-
-1. 规则引擎
-2. Web管理系统
-3. 监控系统
-4. 协议桥接agent（用户其他协议与broker之间交互）
-
 
 ## main方式启动
 
@@ -35,7 +30,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 
 ```
@@ -49,12 +44,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
        .websocketPort(8999)
        .options(channelOptionMap -> {})
        .ssl(false)
+       .reactivePasswordAuth((U,P)->true)
        .sslContext(new SslContext("crt","key"))
        .isWebsocket(true)
        .wiretap(false)
        .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
        .build()
-        .startAwait();
+       .startAwait();
 
 ```
 
@@ -86,7 +82,7 @@ assert bootstrap != null;
 ## jar方式
 
 
-1. 下载源码 mvn compile package <smqtt-bootstrap module> -P jar
+1. 下载源码 mvn compile package -P jar
 
 ```markdown
   在smqtt-bootstrap/target目录下生成jar
@@ -130,6 +126,14 @@ assert bootstrap != null;
     smqtt.http.ssl.enable=false;
     # smqtt.http.ssl.crt =;
     # smqtt.http.ssl.key;
+    # 开启集群
+    smqtt.cluster.enable=false
+    # 集群节点地址
+    smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
+    # 节点端口
+    smqtt.cluster.port=7771
+    # 节点名称
+    smqtt.cluster.node=node-1
   ```
 
 3. 启动服务
@@ -179,19 +183,16 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 
 
-## 其他功能文档尚未完善，有兴趣同学可以加我微信群！
+## wiki地址
 
+集群类配置参考文档:
 
-###压测报告
-
+[smqtt文档](https://doc.smqtt.cc/)
 
 
 ## License
 
-[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
-
-### 关注公众号，输入 `物联网`  扫码加入微信交流群
-![image](icon/icon.jpg)
+[Apache License, Version 2.0](LICENSE)
 
 
 
